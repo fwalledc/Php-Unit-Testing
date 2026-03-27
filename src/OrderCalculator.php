@@ -1,4 +1,5 @@
 <?php
+namespace App;
 
 /**
  * Klasse fuer Bestellberechnungen
