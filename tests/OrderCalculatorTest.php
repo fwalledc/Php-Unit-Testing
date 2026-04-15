@@ -8,18 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class OrderCalculatorTest extends TestCase //Immer TestCase mit deiner Klasse erweitern
 {
-    private OrderCalculatorFixed $calculator;
-
-
-    /**
-     * wir verlegen den arrange part in die setup methode, die vor jedem test durchlaufen wird
-     * @return void
-     */
-    protected function setUp(): void
-    {
-
-        $this->calculator = new OrderCalculatorFixed();
-    }
 
     /*
     Was zuerst testen?
