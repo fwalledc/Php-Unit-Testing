@@ -1,15 +1,14 @@
 <?php
-namespace App;
 
 /**
  * Klasse fuer Bestellberechnungen - KORRIGIERTE VERSION
  * 
  * Alle 15 Bugs aus der Schulung sind behoben!
  */
-class OrderCalculatorFixed
+class OrderCalculator
 {
     private float $taxRate = 0.19;
-    private float $shippingCost = 5.99;
+    private float $shippingCostNetto = 5.03;  // Netto-Versandkosten
     
     /**
      * Berechnet den Gesamtpreis einer Bestellung
@@ -23,10 +22,10 @@ class OrderCalculatorFixed
     {
         // BUG #1 FIXED: Input-Validierung hinzugefuegt
         if ($quantity <= 0) {
-            throw new \InvalidArgumentException('Quantity muss positiv sein');
+            throw new InvalidArgumentException('Quantity muss positiv sein');
         }
         if ($subtotal < 0) {
-            throw new \InvalidArgumentException('Subtotal darf nicht negativ sein');
+            throw new InvalidArgumentException('Subtotal darf nicht negativ sein');
         }
         
         // BUG #14 FIXED: Unused Variable entfernt (war: $pricePerItem)
@@ -35,7 +34,7 @@ class OrderCalculatorFixed
         if (strtolower($customerType) === 'premium') {
             $shipping = 0;
         } else {
-            $shipping = $this->shippingCost;
+            $shipping = $this->shippingCostNetto;
         }
         
         $discount = 0;
@@ -45,9 +44,13 @@ class OrderCalculatorFixed
         
         // BUG #3 FIXED: Rabatt VOR Steuerberechnung
         $subtotalAfterDiscount = $subtotal - $discount;
-        $tax = $subtotalAfterDiscount * $this->taxRate;
         
-        $total = $subtotalAfterDiscount + $tax + $shipping;
+        // BUG #16 FIXED: MwSt wird auf (Subtotal + Versand) berechnet!
+        // Nicht nur auf Subtotal, sondern auf die gesamte Netto-Summe
+        $nettoTotal = $subtotalAfterDiscount + $shipping;
+        $tax = $nettoTotal * $this->taxRate;
+        
+        $total = $nettoTotal + $tax;
         
         // BUG #4 FIXED: Rundung auf 2 Dezimalstellen
         return round($total, 2);
@@ -57,7 +60,7 @@ class OrderCalculatorFixed
      * Berechnet Versandkosten basierend auf Gewicht
      * 
      * @param float $weight Gewicht in kg
-     * @return float Versandkosten
+     * @return float Netto-Versandkosten (ohne MwSt)
      */
     public function calculateShipping(float $weight): float
     {
@@ -66,12 +69,13 @@ class OrderCalculatorFixed
             throw new InvalidArgumentException('Gewicht muss positiv sein');
         }
         
+        // Netto-Preise (MwSt wird separat berechnet)
         if ($weight < 5) {
-            return 5.99;
+            return 5.03;  // Leichtpaket netto
         } elseif ($weight < 20) {
-            return 9.99;
+            return 8.39;  // Normalpaket netto
         } else {
-            return 15.99;
+            return 13.44;  // Schwerpaket netto
         }
     }
     
