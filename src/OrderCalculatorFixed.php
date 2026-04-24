@@ -1,11 +1,11 @@
 <?php
-
+namespace App;
 /**
  * Klasse fuer Bestellberechnungen - KORRIGIERTE VERSION
  * 
  * Alle 15 Bugs aus der Schulung sind behoben!
  */
-class OrderCalculator
+class OrderCalculatorFixed
 {
     private float $taxRate = 0.19;
     private float $shippingCostNetto = 5.03;  // Netto-Versandkosten
@@ -22,10 +22,10 @@ class OrderCalculator
     {
         // BUG #1 FIXED: Input-Validierung hinzugefuegt
         if ($quantity <= 0) {
-            throw new InvalidArgumentException('Quantity muss positiv sein');
+            throw new \InvalidArgumentException('Quantity muss positiv sein');
         }
         if ($subtotal < 0) {
-            throw new InvalidArgumentException('Subtotal darf nicht negativ sein');
+            throw new \InvalidArgumentException('Subtotal darf nicht negativ sein');
         }
         
         // BUG #14 FIXED: Unused Variable entfernt (war: $pricePerItem)
